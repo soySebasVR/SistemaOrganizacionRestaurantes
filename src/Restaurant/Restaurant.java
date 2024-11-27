@@ -14,6 +14,10 @@ public class Restaurant {
         recetas = new ArrayList<>();
     }
 
+    public ArrayList<Ingrediente> getInventario() {
+        return inventario;
+    }
+
     public void loadFromDB() throws FileNotFoundException {
         // recetas
         File fileRecetas = new File("db/recetas/recetas.txt");
@@ -41,6 +45,13 @@ public class Restaurant {
             }
         }
         quickSortInventario(inventario, 0, inventario.size() - 1);
+    }
+
+    public void updateInventario(ArrayList<Ingrediente> toUpdate) {
+        for (Ingrediente upd : toUpdate) {
+            Ingrediente old = searchInventario(upd.getNombre());
+            old.setCantidad(old.getCantidad() - upd.getCantidad());
+        }
     }
 
     private void quickSortReceta(ArrayList<Receta> array, int low, int high) {
@@ -91,5 +102,43 @@ public class Restaurant {
         array.set(i + 1, array.get(high));
         array.set(high, temp);
         return i + 1;
+    }
+
+    public Ingrediente searchInventario(String nombre) {
+        int inicio = 0;
+        int fin = inventario.size() - 1;
+
+        while (inicio <= fin) {
+            int medio = inicio + (fin - inicio) / 2;
+
+            if (inventario.get(medio).getNombre().equalsIgnoreCase(nombre)) {
+                return inventario.get(medio);
+            }
+            if (inventario.get(medio).getNombre().compareToIgnoreCase(nombre) > 0) {
+                inicio = medio + 1;
+            } else {
+                fin = medio - 1;
+            }
+        }
+        return null;
+    }
+
+    public Receta searchReceta(String nombre) {
+        int inicio = 0;
+        int fin = recetas.size() - 1;
+
+        while (inicio <= fin) {
+            int medio = inicio + (fin - inicio) / 2;
+
+            if (recetas.get(medio).getNombre().equalsIgnoreCase(nombre)) {
+                return recetas.get(medio);
+            }
+            if (recetas.get(medio).getNombre().compareToIgnoreCase(nombre) > 0) {
+                inicio = medio + 1;
+            } else {
+                fin = medio - 1;
+            }
+        }
+        return null;
     }
 }

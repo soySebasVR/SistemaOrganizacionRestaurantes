@@ -10,6 +10,10 @@ public class ListaElaboracion {
         this.tail = null;
     }
 
+    public Paso getHead() {
+        return head;
+    }
+
     // Traversing from head to the end of the list
     public void traverseForward()
     {

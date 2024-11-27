@@ -12,4 +12,8 @@ public class DataInDB {
     public String getNombre() {
         return nombre;
     }
+
+    public int getId() {
+        return id;
+    }
 }

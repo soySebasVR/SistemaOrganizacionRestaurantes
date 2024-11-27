@@ -11,4 +11,16 @@ public class Paso {
         this.prev = null;
         this.next = null;
     }
+
+    public String getData() {
+        return data;
+    }
+
+    public Paso getNext() {
+        return next;
+    }
+
+    public Paso getPrev() {
+        return prev;
+    }
 }
