@@ -2,6 +2,7 @@ import Exceptions.NotFound;
 import Restaurant.Elaboracion.ListaElaboracion;
 import Restaurant.Elaboracion.Paso;
 import Restaurant.Ingrediente;
+import Restaurant.IngredientesLista;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -38,15 +39,11 @@ public class Main {
                             TimeUnit.SECONDS.sleep(1);
                             break;
                         case "2":
-                            //NuevoProducto(sc, almacen);
+                            nuevaReceta(sc, restaurant);
                             TimeUnit.SECONDS.sleep(1);
                             break;
                         case "3":
                             //ObtenerProducto(sc, almacen);
-                            TimeUnit.SECONDS.sleep(1);
-                            break;
-                        case "4":
-                            //ActualizarPrecio(almacen, sc);
                             TimeUnit.SECONDS.sleep(1);
                             break;
                         case "9":
@@ -118,10 +115,88 @@ public class Main {
             if (option.equalsIgnoreCase("s")) {
                 restaurant.updateInventario(ingredientes);
             }
-
         } catch (FileNotFoundException | NotFound e) {
             e.printStackTrace();
             return;
+        }
+    }
+
+    public static void nuevaReceta(Scanner sc, Restaurant.Restaurant restaurant) throws InterruptedException {
+        String option = "";
+        String recetaNombre = "";
+        ListaElaboracion preparacion = new ListaElaboracion();
+        IngredientesLista ingredientes = new IngredientesLista();
+
+        while (true) {
+            while (!option.equalsIgnoreCase("s")) {
+                System.out.println("Ingrese el nombre de la nueva receta");
+                recetaNombre = sc.nextLine();
+                System.out.println("Confirma? (S)í");
+                option = sc.nextLine();
+            }
+
+            clearScreen();
+            System.out.println("Ingresar ingredientes");
+            TimeUnit.MILLISECONDS.sleep(300);
+            while (true) {
+                try {
+                    clearScreen();
+                    System.out.println("Ingredientes ingresados:");
+                    for (Ingrediente ingrediente : ingredientes.getIngredientes()) {
+                        ingrediente.printIngrediente();
+                    }
+                    System.out.println();
+                    System.out.println("1. Ingresar ingrediente");
+                    System.out.println("2. Eliminar ingrediente");
+                    System.out.println("3. Terminar edición");
+                    option = sc.nextLine();
+                    if (option.equalsIgnoreCase("1")) {
+                        System.out.println("Nombre del ingrediente:");
+                        String nombreIngrediente = sc.nextLine();
+                        System.out.println("Cantidad:");
+                        double cantidadIngrediente = Double.parseDouble(sc.nextLine());
+                        System.out.println("Unidades:");
+                        String unidadesIngrediente = sc.nextLine();
+                        ingredientes.addIngrediente(0, nombreIngrediente, cantidadIngrediente, unidadesIngrediente);
+                    } else if (option.equalsIgnoreCase("2")) {
+                        System.out.println("Nombre del ingrediente a eliminar:");
+                        String nombreIngrediente = sc.nextLine();
+                        ingredientes.deleteIngrediente(nombreIngrediente);
+                    } else if (option.equalsIgnoreCase("3")) {
+                        break;
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Formato de número inválido");
+                }
+            }
+
+            while (true) {
+                try {
+                    clearScreen();
+                    System.out.println("Pasos de preparación:");
+                    preparacion.printList();
+                    System.out.println();
+                    System.out.println("1. Ingresar paso");
+                    System.out.println("2. Terminar edición");
+                    option = sc.nextLine();
+                    if (option.equalsIgnoreCase("1")) {
+                        System.out.println("Paso:");
+                        String paso = sc.nextLine();
+                        preparacion.insertAtEnd(paso);
+                    } else if (option.equalsIgnoreCase("2")) {
+                        break;
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Formato de número inválido");
+                }
+            }
+
+            System.out.println("Confirma guardar en BD? (S)i - (N)o");
+            option = sc.nextLine();
+            if (option.equalsIgnoreCase("s")) {
+                restaurant.saveReceta(recetaNombre, ingredientes, preparacion);
+                break;
+            }
         }
     }
 }

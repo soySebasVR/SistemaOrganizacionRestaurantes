@@ -1,13 +1,18 @@
 package Restaurant;
 
+import Restaurant.Elaboracion.ListaElaboracion;
+import Restaurant.Elaboracion.Paso;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Restaurant {
-    private ArrayList<Ingrediente> inventario;
-    private ArrayList<Receta> recetas;
+    private final ArrayList<Ingrediente> inventario;
+    private final ArrayList<Receta> recetas;
 
     public Restaurant() {
         inventario = new ArrayList<>();
@@ -45,6 +50,58 @@ public class Restaurant {
             }
         }
         quickSortInventario(inventario, 0, inventario.size() - 1);
+    }
+
+    public void saveReceta(String recetaNombre, IngredientesLista ingredientes, ListaElaboracion elaboracion) {
+        int idReceta = recetas.size() + 1;
+        recetas.add(new Receta(idReceta, recetaNombre));
+        quickSortReceta(recetas, 0, recetas.size() - 1);
+
+        File fileRecetas = new File("db/recetas/recetas.txt");
+        ArrayList<String> recetasNombres = new ArrayList<>();
+        try (Scanner myReader = new Scanner(fileRecetas)) {
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                recetasNombres.add(data);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("No se encontró archivo");
+        }
+        recetasNombres.add(recetaNombre);
+        try (FileWriter fw = new FileWriter(fileRecetas)) {
+            for (String s : recetasNombres) {
+                fw.write(s + "\n");
+            }
+            fw.flush();
+        } catch (IOException e) {
+            System.err.println("Error al guardar en BD");
+            e.printStackTrace();
+        }
+
+        File fileIngredientes = new File("db/recetas/ingredientes/" + idReceta + ".csv");
+        try (FileWriter fw = new FileWriter(fileIngredientes)) {
+            fw.write("cantidad,unidad,ingrediente\n");
+            for (Ingrediente i : ingredientes.getIngredientes()) {
+                fw.write(i.getCantidad() + "," + i.getUnidades() + "," + i.getNombre() + "\n");
+            }
+            fw.flush();
+        } catch (IOException e) {
+            System.err.println("Error al guardar en BD");
+            e.printStackTrace();
+        }
+
+        File fileElaboracion = new File("db/recetas/elaboracion/" + idReceta + ".txt");
+        try (FileWriter fw = new FileWriter(fileElaboracion)) {
+            Paso current = elaboracion.getHead();
+            while (current != null) {
+                fw.write(current.getData() + "\n");
+                current = current.getNext();
+            }
+            fw.flush();
+        } catch (IOException e) {
+            System.err.println("Error al guardar en BD");
+            e.printStackTrace();
+        }
     }
 
     public void updateInventario(ArrayList<Ingrediente> toUpdate) {

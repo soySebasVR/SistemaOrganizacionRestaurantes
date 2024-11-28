@@ -14,25 +14,6 @@ public class ListaElaboracion {
         return head;
     }
 
-    // Traversing from head to the end of the list
-    public void traverseForward()
-    {
-        Paso current = head;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.next;
-        }
-    }
-    // Traversing from tail to the head
-    public void traverseBackward()
-    {
-        Paso current = tail;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.prev;
-        }
-    }
-
     public void insertAtEnd(String data)
     {
         Paso temp = new Paso(data);
@@ -46,4 +27,12 @@ public class ListaElaboracion {
         tail = temp;
     }
 
+    public void printList()
+    {
+        Paso current = head;
+        while (current != null) {
+            System.out.println(current.getData());
+            current = current.next;
+        }
+    }
 }
