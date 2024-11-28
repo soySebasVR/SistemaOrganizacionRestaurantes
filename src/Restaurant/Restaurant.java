@@ -19,10 +19,6 @@ public class Restaurant {
         recetas = new ArrayList<>();
     }
 
-    public ArrayList<Ingrediente> getInventario() {
-        return inventario;
-    }
-
     public void loadFromDB() throws FileNotFoundException {
         // recetas
         File fileRecetas = new File("db/recetas/recetas.txt");
@@ -96,6 +92,29 @@ public class Restaurant {
             while (current != null) {
                 fw.write(current.getData() + "\n");
                 current = current.getNext();
+            }
+            fw.flush();
+        } catch (IOException e) {
+            System.err.println("Error al guardar en BD");
+            e.printStackTrace();
+        }
+    }
+
+    public void saveInventario(String ingrediente, double cantidad) {
+        int id = inventario.size() + 1;
+        Ingrediente search = searchInventario(ingrediente);
+        if (search != null) {
+            search.setCantidad(search.getCantidad() + cantidad);
+        } else {
+            inventario.add(new Ingrediente(id, ingrediente, cantidad, ""));
+            quickSortInventario(inventario, 0, inventario.size() - 1);
+        }
+
+        File fileInventario = new File("db/inventario.csv");
+        try (FileWriter fw = new FileWriter(fileInventario)) {
+            fw.write("cantidad,ingrediente\n");
+            for (Ingrediente i : inventario) {
+                fw.write(i.getCantidad() + "," + i.getNombre() + "\n");
             }
             fw.flush();
         } catch (IOException e) {

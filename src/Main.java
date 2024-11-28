@@ -43,7 +43,7 @@ public class Main {
                             TimeUnit.SECONDS.sleep(1);
                             break;
                         case "3":
-                            //ObtenerProducto(sc, almacen);
+                            ingresoIngredientes(sc, restaurant);
                             TimeUnit.SECONDS.sleep(1);
                             break;
                         case "9":
@@ -196,6 +196,34 @@ public class Main {
             if (option.equalsIgnoreCase("s")) {
                 restaurant.saveReceta(recetaNombre, ingredientes, preparacion);
                 break;
+            }
+        }
+    }
+
+    public static void ingresoIngredientes(Scanner sc, Restaurant.Restaurant restaurant) {
+        String option = "";
+        String nombreIngrediente = "";
+        double cantidadIngrediente = 0;
+
+        while (true) {
+            try {
+                System.out.println("Ingresar nombre de ingrediente:");
+                nombreIngrediente = sc.nextLine();
+                System.out.println("Ingresar cantidad de ingrediente:");
+                cantidadIngrediente = Double.parseDouble(sc.nextLine());
+
+                System.out.println("Confirma guardar en BD? (S)i - (N)o");
+                option = sc.nextLine();
+                if (option.equalsIgnoreCase("s")) {
+                    restaurant.saveInventario(nombreIngrediente, cantidadIngrediente);
+                }
+                System.out.println("Ingresar otro ingrediente? (S)i - (N)o");
+                option = sc.nextLine();
+                if (option.equalsIgnoreCase("n")) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Formato de número inválido");
             }
         }
     }

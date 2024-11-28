@@ -2,7 +2,7 @@ package Restaurant;
 
 public class Ingrediente extends DataInDB {
     private double cantidad;
-    private String unidades;
+    private final String unidades;
 
     public Ingrediente(int id, String nombre, double cantidad, String unidades) {
         super(id, nombre);
