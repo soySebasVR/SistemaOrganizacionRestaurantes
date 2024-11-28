@@ -100,7 +100,7 @@ public class Main {
                         System.out.println("No hay next");
                     }
                 } else if (option.equalsIgnoreCase("a")) {
-                    if (current.getNext() != null) {
+                    if (current.getPrev() != null) {
                         current = current.getPrev();
                     } else {
                         System.out.println("No hay prev");
@@ -115,9 +115,10 @@ public class Main {
             if (option.equalsIgnoreCase("s")) {
                 restaurant.updateInventario(ingredientes);
             }
-        } catch (FileNotFoundException | NotFound e) {
+        } catch (NotFound e) {
+            System.out.println("No se encontraron ingredientes suficientes: " + e.getMessage());
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return;
         }
     }
 
